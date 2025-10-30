@@ -5,8 +5,8 @@ name: Run d2d
     tags:
       - v*.*.*
 jobs:
-  build-and-publish-to-pypi:
-    name: Build and publish library to PyPI
+  run-d2d:
+    name: Run d2d on source and build
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p scancode-inputs
           cp dist/*.whl scancode-inputs/to_$(basename dist/*.whl)
-          tar --exclude=.git --exclude=scancode-inputs --exclude=dist \ -czf scancode-inputs/from.tar.gz .
+          git archive --format=tar.gz -o scancode-inputs/from_repo.tar.gz HEAD
       - name: Run d2d
         uses: aboutcode-org/scancode-action@beta
         with:
