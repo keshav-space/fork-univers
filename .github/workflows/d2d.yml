@@ -1,12 +1,12 @@
-name: Run d2d
+name: Run d2d pipeline
 'on':
   workflow_dispatch: null
   push:
     tags:
       - v*.*.*
 jobs:
-  run-d2d:
-    name: Run d2d on source and build
+  build-and-publish-to-pypi:
+    name: Build and publish library to PyPI
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -18,12 +18,27 @@ jobs:
         run: python -m pip install build --user
       - name: Build a binary wheel and a source tarball
         run: python -m build --sdist --wheel --outdir dist/
-      - name: prepare d2d inputs
+      - name: Upload built archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_archives
+          path: dist/*.whl
+
+  run-d2d-pipeline:
+    name: Run d2d pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build archive
+        uses: actions/download-artifact@v4
+        with:
+          name: build_archives
+          path: scancode-inputs/
+      - name: Prepare inputs for d2d
+        shell: bash
         run: |
-          mkdir -p scancode-inputs
-          cp dist/*.whl scancode-inputs/to_$(basename dist/*.whl)
-          git archive --format=tar.gz -o scancode-inputs/from_repo.tar.gz HEAD
-      - name: Run d2d
+          git archive --format=tar.gz -o scancode-inputs/from.tar.gz HEAD
+          cp scancode-inputs/*.whl scancode-inputs/to_$(basename scancode-inputs/*.whl)
+      - name: Run d2d pipeline
         uses: aboutcode-org/scancode-action@beta
         with:
           pipelines: map_deploy_to_develop
