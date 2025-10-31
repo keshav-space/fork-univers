@@ -40,3 +40,4 @@ jobs:
         uses: aboutcode-org/scancode-action@beta
         with:
           pipelines: ${{ inputs.steps && format('map_deploy_to_develop:%s', inputs.steps) || 'map_deploy_to_develop' }}
+          inputs-path: ../scancode-inputs
