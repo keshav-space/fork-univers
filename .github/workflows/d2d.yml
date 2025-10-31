@@ -8,8 +8,6 @@ jobs:
   build-wheel:
     name: Build wheel for package
     runs-on: ubuntu-22.04
-    outputs:
-      wheel_file: ${{ steps.get_wheel.outputs.wheel_file }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -20,20 +18,16 @@ jobs:
         run: python -m pip install build --user
       - name: Build a binary wheel and a source tarball
         run: python -m build --sdist --wheel --outdir dist/
-      - name: Get wheel filename
-        id: get_wheel
-        run: echo "wheel_file=$(basename dist/*.whl)" >> $GITHUB_OUTPUT
       - name: Upload built archives
         uses: actions/upload-artifact@v4
         with:
           name: build_archives
-          path: dist/
+          path: dist/*.whl
     
 
   run-d2d-pipeline:
     needs: build-wheel
-    uses: aboutcode-org/scancode-action/.github/workflows/map-deploy-to-develop-template.yml@d2d-template
+    uses: ./.github/workflows/d2d-template.yml
     with:
       artifact-name: build_archives
-      archive-name: ${{ needs.build-wheel.outputs.wheel_file }}
       steps: ""
