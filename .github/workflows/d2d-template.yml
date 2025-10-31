@@ -32,6 +32,9 @@ jobs:
             mv "$file" "../scancode-inputs/to_$base"
           done
           git archive --format=tar.gz -o ../scancode-inputs/from.tar.gz HEAD
+      - name: show input folder ls
+        shell: bash
+        run: ls ../scancode-inputs
 
       - name: Run D2D pipeline
         uses: aboutcode-org/scancode-action@beta
