@@ -22,26 +22,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build_archives
-          path: dist/*.whl
+          path: dist/
 
   run-d2d-pipeline:
     needs: build-wheel
-    name: Run d2d pipeline
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download build archive
-        uses: actions/download-artifact@v4
-        with:
-          name: build_archives
-          path: scancode-inputs/
-      - name: Prepare inputs for d2d
-        shell: bash
-        run: |
-          mkdir -p scancode-inputs
-          git archive --format=tar.gz -o scancode-inputs/from.tar.gz HEAD
-          cp scancode-inputs/*.whl scancode-inputs/to_$(basename scancode-inputs/*.whl)
-      - name: Run d2d pipeline
-        uses: aboutcode-org/scancode-action@beta
-        with:
-          pipelines: map_deploy_to_develop
+    uses: ./.github/workflows/d2d-template.yml
+    with:
+      artifact-name: build_archives
+      archive-name: univers-31.1.0-py3-none-any.whl
+      pipelines: map_deploy_to_develop
