@@ -5,8 +5,8 @@ name: Run d2d pipeline
     tags:
       - v*.*.*
 jobs:
-  build-and-publish-to-pypi:
-    name: Build library
+  build-wheel:
+    name: Build wheel for package
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +25,7 @@ jobs:
           path: dist/*.whl
 
   run-d2d-pipeline:
+    needs: build-wheel
     name: Run d2d pipeline
     runs-on: ubuntu-latest
     steps:
