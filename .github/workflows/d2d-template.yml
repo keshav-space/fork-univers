@@ -3,17 +3,18 @@ on:
   workflow_call:
     inputs:
       artifact-name:
-        description: "The name of the artifact to download"
+        description: "The name of the artifact where build archive is stored"
         required: true
         type: string
       archive-name:
-        description: "The file name inside scancode-inputs to prefix with 'to_'"
+        description: "Build archive file name"
         required: true
         type: string
-      pipelines:
-        description: "D2D pipelines to run"
-        required: true
+      steps:
+        description: "Comma separated D2D optional steps to run"
+        required: false
         type: string
+        default: ""
 
 jobs:
   run-d2d-pipeline:
@@ -38,4 +39,4 @@ jobs:
       - name: Run d2d pipeline
         uses: aboutcode-org/scancode-action@beta
         with:
-          pipelines: ${{ inputs.pipelines }}
+          pipelines: ${{ inputs.steps && format('map_deploy_to_develop:%s', inputs.steps) || 'map_deploy_to_develop' }}
