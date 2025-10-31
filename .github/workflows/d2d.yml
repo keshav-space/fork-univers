@@ -30,4 +30,4 @@ jobs:
     with:
       artifact-name: build_archives
       archive-name: univers-31.1.0-py3-none-any.whl
-      pipelines: map_deploy_to_develop
+      steps: ""
