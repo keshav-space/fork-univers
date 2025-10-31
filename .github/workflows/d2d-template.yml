@@ -1,0 +1,41 @@
+name: D2D Pipeline Template
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: "The name of the artifact to download"
+        required: true
+        type: string
+      archive-name:
+        description: "The file name inside scancode-inputs to prefix with 'to_'"
+        required: true
+        type: string
+      pipelines:
+        description: "D2D pipelines to run"
+        required: true
+        type: string
+
+jobs:
+  run-d2d-pipeline:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs['artifact-name'] }}
+          path: dist/
+
+      - name: Prepare inputs for d2d
+        shell: bash
+        run: |
+          mkdir -p scancode-inputs
+          git archive --format=tar.gz -o scancode-inputs/from.tar.gz HEAD
+          cp dist/${{ inputs['archive-name'] }} scancode-inputs/to_${{ inputs['archive-name'] }}
+
+      - name: Run d2d pipeline
+        uses: aboutcode-org/scancode-action@beta
+        with:
+          pipelines: ${{ inputs.pipelines }}
