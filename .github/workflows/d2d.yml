@@ -31,5 +31,5 @@ jobs:
     uses: aboutcode-org/scancode-action/.github/workflows/map-deploy-to-develop-template.yml@d2d-template
     with:
       artifact-name: build_archives
-      archive-name: ${{ steps.build_wheel.outputs.wheel_file }}
+      archive-name: ${{ needs.build.outputs.wheel_file }}
       steps: ""
