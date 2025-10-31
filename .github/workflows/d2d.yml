@@ -27,7 +27,7 @@ jobs:
 
   run-d2d-pipeline:
     needs: build-wheel
-    uses: ./.github/workflows/d2d-template.yml
+    uses: aboutcode-org/scancode-action/.github/workflows/map-deploy-to-develop-template.yml@d2d-template
     with:
       artifact-name: build_archives
       steps: ""
