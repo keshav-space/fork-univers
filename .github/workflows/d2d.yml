@@ -8,6 +8,8 @@ jobs:
   build-wheel:
     name: Build wheel for package
     runs-on: ubuntu-22.04
+    outputs:
+      wheel_file: ${{ steps.get_wheel.outputs.wheel_file }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -18,13 +20,15 @@ jobs:
         run: python -m pip install build --user
       - name: Build a binary wheel and a source tarball
         run: python -m build --sdist --wheel --outdir dist/
-      - name: Get wheel filename 
-        run: echo "wheel_file=$(ls dist/*.whl)" >> $GITHUB_OUTPUT
+      - name: Get wheel filename
+        id: get_wheel
+        run: echo "wheel_file=test" >> $GITHUB_OUTPUT
       - name: Upload built archives
         uses: actions/upload-artifact@v4
         with:
           name: build_archives
           path: dist/
+    
 
   run-d2d-pipeline:
     needs: build-wheel
