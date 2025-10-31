@@ -22,7 +22,7 @@ jobs:
         run: python -m build --sdist --wheel --outdir dist/
       - name: Get wheel filename
         id: get_wheel
-        run: echo "wheel_file=test" >> $GITHUB_OUTPUT
+        run: echo "wheel_file=$(ls dist/*.whl)" >> $GITHUB_OUTPUT
       - name: Upload built archives
         uses: actions/upload-artifact@v4
         with:
